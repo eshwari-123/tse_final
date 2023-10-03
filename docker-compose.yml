@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - my-network
+
+  mongo-express-app:
+    image: mongo-express:latest
+    container_name: mongo-express-app
+    restart: always
+    ports:
+      - "8082:9000"
+    environment:
+      ME_CONFIG_BASICAUTH_USERNAME: admin
+      ME_CONFIG_BASICAUTH_PASSWORD: admin
+      ME_CONFIG_MONGODB_SERVER: mongodb
+    depends_on:
+      - mongodb
+    networks:
+      - my-network
+
+  initializer_springbootapp:
+    build:
+      context: ./tseinit_backend
+      dockerfile: Dockerfile
+    container_name: tse_backend
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATA_MONGODB_URI: mongodb://mongodb:27017/database
+    depends_on:
+      - mongodb
+    networks:
+      - my-network
+
+  initializer_reactapp:
+    build:
+      context: ./tse_frontend
+      dockerfile: Dockerfile
+    container_name: tse_frontend
+    ports:
+      - "3000:3000"
+
+volumes:
+  mongodb_data:
+
+networks:
+  my-network:
+    driver: bridge

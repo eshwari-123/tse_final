@@ -1,0 +1,4 @@
+token:sqp_f30f7974b595857d9905d7e352a54325be20d983
+
+
+mvn clean verify sonar:sonar -Dsonar.projectKey=tse_initializer -Dsonar.projectName='tse_initializer' -Dsonar.host.url=http://localhost:9000 -Dsonar.token=sqp_f30f7974b595857d9905d7e352a54325be20d983
